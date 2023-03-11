@@ -4,7 +4,6 @@ from typing import Any, Callable
 
 from .exceptions import DupOperationException, NoValueException
 from .imanager import IEnvironmentManager
-from .no_value import NoValue
 
 
 class LazyValue:
@@ -61,10 +60,8 @@ class LazyValue:
 
     def get_raw_value(self) -> str | None:
         value = self.environment._get(self.key)
-        if isinstance(value, NoValue):
-            if self.default_value is None and not self.is_optional:
-                raise NoValueException(
-                    f"Value for key {self.key} does not exists"
-                )
-            return self.default_value
+        if value is None:
+            value = self.default_value
+        if value is None and not self.is_optional:
+            raise NoValueException(f"Value for key {self.key} does not exists")
         return value

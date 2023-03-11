@@ -7,7 +7,6 @@ from . import exceptions
 from .imanager import IEnvironmentManager
 from .immutable_dict import ImmutableDict
 from .lazy_value import LazyValue
-from .no_value import NoValue
 
 
 class EnvironmentManager(IEnvironmentManager):
@@ -22,8 +21,8 @@ class EnvironmentManager(IEnvironmentManager):
     def get(self, key: str) -> LazyValue:
         return LazyValue(key, self)
 
-    def _get(self, key: str) -> str | NoValue:
-        return self._mapping.get(key, NoValue.build())
+    def _get(self, key: str) -> str | None:
+        return self._mapping.get(key)
 
     def __setattr__(self, key: str, value: Any) -> None:
         if key == "_mapping" and self._init:

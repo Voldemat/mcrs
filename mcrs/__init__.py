@@ -5,7 +5,6 @@ from .environment import (
     ImmutableDict,
     LazyValue,
     LazyValueException,
-    NoValue,
     NoValueException,
 )
 from .execution_context import ExecutionContext
@@ -35,5 +34,4 @@ __all__ = (
     "LazyValueException",
     "DupOperationException",
     "LazyValue",
-    "NoValue",
 )
