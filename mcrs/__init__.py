@@ -1,4 +1,13 @@
-from .environment import Environment
+from .environment import (
+    DupOperationException,
+    EnvironmentException,
+    EnvironmentManager,
+    ImmutableDict,
+    LazyValue,
+    LazyValueException,
+    NoValue,
+    NoValueException,
+)
 from .execution_context import ExecutionContext
 from .imicroservice import IMicroService
 from .launcher import BaseLauncher
@@ -11,7 +20,6 @@ from .utils import get_resource_limit, parse_dns_servers_from_file
 __all__ = (
     "IMicroService",
     "BaseLauncher",
-    "Environment",
     "Network",
     "parse_dns_servers_from_file",
     "PythonInfo",
@@ -20,4 +28,12 @@ __all__ = (
     "ResourceLimits",
     "Limit",
     "ExecutionContext",
+    "EnvironmentManager",
+    "ImmutableDict",
+    "EnvironmentException",
+    "NoValueException",
+    "LazyValueException",
+    "DupOperationException",
+    "LazyValue",
+    "NoValue",
 )
