@@ -22,9 +22,48 @@ class BaseLauncher:
         self, instance: IMicroService, loop: asyncio.AbstractEventLoop
     ) -> None:
         try:
-            with DelayedInterrupt():
-                loop.run_until_complete(instance.setup())
+            self.setup(instance, loop)
             loop.run_until_complete(instance.main())
         finally:
-            with DelayedInterrupt():
-                loop.run_until_complete(instance.shutdown())
+            self.shutdown(instance, loop)
+
+    def setup(
+        self, instance: IMicroService, loop: asyncio.AbstractEventLoop
+    ) -> None:
+        with DelayedInterrupt():
+            loop.run_until_complete(instance.setup())
+
+    def shutdown(
+        self, instance: IMicroService, loop: asyncio.AbstractEventLoop
+    ) -> None:
+        with DelayedInterrupt():
+            loop.run_until_complete(instance.shutdown())
+            try:
+                self._cancel_all_task(loop)
+                loop.run_until_complete(loop.shutdown_asyncgens())
+            finally:
+                loop.close()
+
+    def _cancel_all_task(self, loop: asyncio.AbstractEventLoop) -> None:
+        to_cancel = asyncio.tasks.all_tasks(loop)
+        if not to_cancel:
+            return
+
+        for task in to_cancel:
+            task.cancel()
+
+        loop.run_until_complete(
+            asyncio.tasks.gather(  # type: ignore [call-overload]
+                *to_cancel, loop=loop, return_exceptions=True
+            )
+        )
+
+        for task in filter(lambda task: not task.cancelled(), to_cancel):
+            if task_exc := task.exception():
+                loop.call_exception_handler(
+                    {
+                        "message": "unhandled exception during shutdown",
+                        "exception": task_exc,
+                        "task": task,
+                    }
+                )
