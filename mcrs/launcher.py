@@ -53,9 +53,7 @@ class BaseLauncher:
             task.cancel()
 
         loop.run_until_complete(
-            asyncio.tasks.gather(
-                *to_cancel, return_exceptions=True
-            )
+            asyncio.tasks.gather(*to_cancel, return_exceptions=True)
         )
 
         for task in filter(lambda task: not task.cancelled(), to_cancel):
