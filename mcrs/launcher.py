@@ -53,8 +53,8 @@ class BaseLauncher:
             task.cancel()
 
         loop.run_until_complete(
-            asyncio.tasks.gather(  # type: ignore [call-overload]
-                *to_cancel, loop=loop, return_exceptions=True
+            asyncio.tasks.gather(
+                *to_cancel, return_exceptions=True
             )
         )
 
