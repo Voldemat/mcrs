@@ -11,14 +11,21 @@ setup(
     author="Vladimir Vojtenko",
     author_email="vladimirdev635@gmail.com",
     license="MIT",
+    entry_points={
+        "console_scripts": [
+            "mcrs = mcrs:cli:main",
+        ],
+    },
     packages=[
         "mcrs",
+        "mcrs.cli",
         "mcrs.lifespan",
         "mcrs.environment",
         "mcrs.environment.config",
     ],
     package_data={
         "mcrs": ["py.typed"],
+        "mcrs.cli": ["py.typed"],
         "mcrs.lifespan": ["py.typed"],
         "mcrs.environment": ["py.typed"],
         "mcrs.environment.config": ["py.typed"],
