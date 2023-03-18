@@ -5,7 +5,6 @@ from .exceptions import (
     LazyValueException,
     NoValueException,
 )
-from .imanager import IEnvironmentManager
 from .immutable_dict import ImmutableDict
 from .lazy_value import LazyValue
 from .manager import EnvironmentManager

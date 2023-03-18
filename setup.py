@@ -11,11 +11,17 @@ setup(
     author="Vladimir Vojtenko",
     author_email="vladimirdev635@gmail.com",
     license="MIT",
-    packages=["mcrs", "mcrs.lifespan", "mcrs.environment"],
+    packages=[
+        "mcrs",
+        "mcrs.lifespan",
+        "mcrs.environment",
+        "mcrs.environment.config",
+    ],
     package_data={
         "mcrs": ["py.typed"],
         "mcrs.lifespan": ["py.typed"],
         "mcrs.environment": ["py.typed"],
+        "mcrs.environment.config": ["py.typed"],
     },
     long_description=(Path(__file__).parent / "README.md").read_text(),
     long_description_content_type="text/markdown",

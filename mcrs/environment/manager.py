@@ -19,7 +19,7 @@ class EnvironmentManager(IEnvironmentManager):
         self._init = True
 
     def get(self, key: str) -> LazyValue:
-        return LazyValue(key, self)
+        return LazyValue(key, lambda: self._get(key))
 
     def _get(self, key: str) -> str | None:
         return self._mapping.get(key)

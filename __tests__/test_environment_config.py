@@ -84,3 +84,19 @@ def test_environment_config_with_nested() -> None:
     environment = EnvironmentManager.load()
     config = APIConfig(environment)
     assert config.jwt.public_key.value == "test_value"
+
+
+def test_environment_config_get_variables() -> None:
+    class JWTConfig(EnvironmentConfig):
+        public_key: EnvConfValue[str] = EnvConfValue("JWT_PUBLIC_KEY")
+
+    class APIConfig(EnvironmentConfig):
+        jwt: JWTConfig
+        host: EnvConfValue[str] = EnvConfValue("HOST")
+
+    os.environ["JWT_PUBLIC_KEY"] = "test_value"
+    os.environ["HOST"] = "test_host"
+    variables = APIConfig.get_all_variables()
+    assert len(variables) == 2
+    assert variables[0].key == "HOST"
+    assert variables[1].key == "JWT_PUBLIC_KEY"

@@ -3,20 +3,19 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from .exceptions import DupOperationException, NoValueException
-from .imanager import IEnvironmentManager
 
 
 class LazyValue:
     key: str
+    loader: Callable[[], str | None]
     is_optional: bool
     default_value: str | None
     converter_func: Callable[[str], Any] | None
     validator_func: Callable[[str], None] | None
-    environment: IEnvironmentManager
 
-    def __init__(self, key: str, environment: IEnvironmentManager) -> None:
+    def __init__(self, key: str, loader: Callable[[], str | None]) -> None:
         self.key = key
-        self.environment = environment
+        self.loader = loader
         self.is_optional = False
         self.default_value = None
         self.converter_func = None
@@ -59,7 +58,7 @@ class LazyValue:
         return value
 
     def get_raw_value(self) -> str | None:
-        value = self.environment._get(self.key)
+        value = self.loader()
         if value is None:
             value = self.default_value
         if value is None and not self.is_optional:
