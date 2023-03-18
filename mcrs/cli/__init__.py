@@ -1,4 +1,4 @@
-from .main import env, main, show_env
+from .main import env, main as cli, show_env
 
 
-__all__ = ("show_env", "main", "env")
+__all__ = ("show_env", "cli", "env")
