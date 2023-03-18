@@ -2,7 +2,11 @@ import os
 
 import pytest
 
-from mcrs import EnvConfValue, EnvironmentConfig, EnvironmentManager
+from mcrs import (
+    EnvConfValue,
+    EnvironmentConfig,
+    EnvironmentManager,
+)
 
 
 def test_environment_config() -> None:
@@ -67,3 +71,16 @@ def test_environment_config_with_default() -> None:
     environment = EnvironmentManager.load()
     config = APIConfig(environment)
     assert config.port.value == 3000
+
+
+def test_environment_config_with_nested() -> None:
+    class JWTConfig(EnvironmentConfig):
+        public_key: EnvConfValue[str] = EnvConfValue("JWT_PUBLIC_KEY")
+
+    class APIConfig(EnvironmentConfig):
+        jwt: JWTConfig
+
+    os.environ["JWT_PUBLIC_KEY"] = "test_value"
+    environment = EnvironmentManager.load()
+    config = APIConfig(environment)
+    assert config.jwt.public_key.value == "test_value"

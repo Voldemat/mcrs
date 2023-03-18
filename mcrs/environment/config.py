@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import inspect
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Generic, TypeVar
 
 from .manager import EnvironmentManager
@@ -53,10 +55,22 @@ class EnvConfValue(Generic[T]):
         return self._value
 
 
-class EnvironmentConfig:
+class IEnvironmentConfig(ABC):
+    @abstractmethod
+    def __init__(self, environment: EnvironmentManager) -> None:
+        raise NotImplementedError
+
+
+class EnvironmentConfig(IEnvironmentConfig):
     def __init__(self, environment: EnvironmentManager) -> None:
         for value in filter(
-            lambda item: isinstance(item, EnvConfValue),
+            lambda value: isinstance(value, EnvConfValue),
             self.__class__.__dict__.values(),
         ):
             value.load_value(environment)
+        for key, ConfigClass in filter(
+            lambda item: inspect.isclass(item[1])
+            and issubclass(item[1], IEnvironmentConfig),
+            self.__class__.__annotations__.items(),
+        ):
+            setattr(self, key, ConfigClass(environment))
