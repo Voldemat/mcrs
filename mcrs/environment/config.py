@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, Literal, TypeVar, overload
 
 from .manager import EnvironmentManager
 
@@ -19,13 +19,57 @@ class EnvConfValue(Generic[T]):
     validator: Callable[[str], None] | None
     converter: Callable[[str], Any] | None
 
+    @overload
     def __init__(
-        self,
+        self: EnvConfValue[str],
+        key: str,
+        default: str | None = None,
+        optional: Literal[False] = False,
+        validator: Callable[[str], None] | None = None,
+        converter: Callable[[str], str] | None = None,
+    ) -> None:
+        pass
+
+    @overload
+    def __init__(
+        self: EnvConfValue[str | None],
+        key: str,
+        default: None = None,
+        optional: Literal[True] = True,
+        validator: Callable[[str], None] | None = None,
+        converter: Callable[[str], str | None] | None = None,
+    ) -> None:
+        pass
+
+    @overload
+    def __init__(
+        self: EnvConfValue[T],
+        key: str,
+        default: str | None = None,
+        optional: Literal[False] = False,
+        validator: Callable[[str], None] | None = None,
+        converter: Callable[[str], T] | None = None,
+    ) -> None:
+        pass
+
+    @overload
+    def __init__(
+        self: EnvConfValue[T | None],
+        key: str,
+        default: None = None,
+        optional: Literal[True] = True,
+        validator: Callable[[str], None] | None = None,
+        converter: Callable[[str], T] | None = None,
+    ) -> None:
+        pass
+
+    def __init__(
+        self: EnvConfValue[T | str | None],
         key: str,
         default: str | None = None,
         optional: bool = False,
         validator: Callable[[str], None] | None = None,
-        converter: Callable[[str], Any] | None = None,
+        converter: Callable[[str], T | str | None] | None = None,
     ) -> None:
         self.key = key
         self.default = default
@@ -49,10 +93,10 @@ class EnvConfValue(Generic[T]):
         self._loaded = True
 
     @property
-    def value(self) -> T | None:
+    def value(self) -> T:
         if not self._loaded:
             raise ValueError(f'EnvConfValue "{self.key}" not loaded value yet')
-        return self._value
+        return self._value  # type: ignore [return-value]
 
 
 class IEnvironmentConfig(ABC):
