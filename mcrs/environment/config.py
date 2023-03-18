@@ -71,6 +71,6 @@ class EnvironmentConfig(IEnvironmentConfig):
         for key, ConfigClass in filter(
             lambda item: inspect.isclass(item[1])
             and issubclass(item[1], IEnvironmentConfig),
-            self.__class__.__annotations__.items(),
+            inspect.get_annotations(self.__class__, eval_str=True).items(),
         ):
             setattr(self, key, ConfigClass(environment))
