@@ -13,7 +13,7 @@ setup(
     license="MIT",
     entry_points={
         "console_scripts": [
-            "mcrs = mcrs.cli:main",
+            "mcrs = mcrs.cli:cli",
         ],
     },
     packages=[
