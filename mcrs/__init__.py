@@ -1,5 +1,7 @@
 from .environment import (
     DupOperationException,
+    EnvConfValue,
+    EnvironmentConfig,
     EnvironmentException,
     EnvironmentManager,
     ImmutableDict,
@@ -30,6 +32,8 @@ __all__ = (
     "EnvironmentManager",
     "ImmutableDict",
     "EnvironmentException",
+    "EnvConfValue",
+    "EnvironmentConfig",
     "NoValueException",
     "LazyValueException",
     "DupOperationException",

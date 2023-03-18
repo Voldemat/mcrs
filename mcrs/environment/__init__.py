@@ -1,3 +1,4 @@
+from .config import EnvConfValue, EnvironmentConfig
 from .exceptions import (
     DupOperationException,
     EnvironmentException,
@@ -17,4 +18,6 @@ __all__ = (
     "LazyValueException",
     "DupOperationException",
     "LazyValue",
+    "EnvConfValue",
+    "EnvironmentConfig",
 )
