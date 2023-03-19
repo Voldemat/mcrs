@@ -65,12 +65,14 @@ def test_environment_config_with_default() -> None:
         port: EnvConfValue[int] = EnvConfValue(
             "PORT", converter=int, default="3000"
         )
+        root_path: EnvConfValue[str] = EnvConfValue("ROOT_PATH", default="")
 
     if "PORT" in os.environ:
         del os.environ["PORT"]
     environment = EnvironmentManager.load()
     config = APIConfig(environment)
     assert config.port.value == 3000
+    assert config.root_path.value == ""
 
 
 def test_environment_config_with_nested() -> None:

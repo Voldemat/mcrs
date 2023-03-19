@@ -86,13 +86,13 @@ class EnvConfValue(Generic[T]):
 
     def load_value(self, environment: IEnvironmentManager) -> None:
         loader = environment.get(self.key)
-        if self.optional:
+        if self.optional is not None:
             loader.optional()
-        if self.validator:
+        if self.validator is not None:
             loader.validator(self.validator)
-        if self.converter:
+        if self.converter is not None:
             loader.converter(self.converter)
-        if self.default:
+        if self.default is not None:
             loader.default(self.default)
         self._value = loader.resolve()
         self._loaded = True
