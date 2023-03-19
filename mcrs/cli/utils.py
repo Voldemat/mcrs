@@ -8,7 +8,6 @@ def dynamic_import(name: str) -> Any:
     working_directory = os.environ["PWD"]
     if working_directory not in sys.path:
         sys.path.insert(1, working_directory)
-    components = name.split(".")
-    variable = components[-1]
-    mod = importlib.import_module(".".join(components[:-1]))
-    return getattr(mod, variable)
+    module_path, variable_name = name.split(":")
+    mod = importlib.import_module(module_path)
+    return getattr(mod, variable_name)
