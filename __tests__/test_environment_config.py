@@ -20,6 +20,16 @@ def test_environment_config() -> None:
     assert config.jwt_public_key.value == "something"
 
 
+def test_environment_config_with_allow_undefined() -> None:
+    class APIConfig(EnvironmentConfig):
+        jwt_public_key: EnvConfValue[str] = EnvConfValue("JWT_PUBLIC_KEY")
+
+    environment = EnvironmentManager({})
+    config = APIConfig(environment, allow_undefined=True)
+
+    assert config.jwt_public_key.value is None
+
+
 def test_environment_config_with_optional() -> None:
     class APIConfig(EnvironmentConfig):
         jwt_public_key: EnvConfValue[str | None] = EnvConfValue(

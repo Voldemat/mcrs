@@ -8,17 +8,24 @@ from ..imanager import IEnvironmentManager
 
 
 class EnvironmentConfig:
-    def __init__(self, environment: IEnvironmentManager) -> None:
+    def __init__(
+        self, environment: IEnvironmentManager, allow_undefined: bool = False
+    ) -> None:
+        self.allow_undefined = allow_undefined
         self.load_values(environment)
         self.load_configs(environment)
 
     def load_values(self, environment: IEnvironmentManager) -> None:
         for value in self.get_env_values():
-            value.load_value(environment)
+            value.load_value(environment, allow_undefined=self.allow_undefined)
 
     def load_configs(self, environment: IEnvironmentManager) -> None:
         for key, ConfigClass in self.get_configs():
-            setattr(self, key, ConfigClass(environment))
+            setattr(
+                self,
+                key,
+                ConfigClass(environment, allow_undefined=self.allow_undefined),
+            )
 
     @classmethod
     def get_env_values(cls) -> Iterable[EnvConfValue[Any]]:
