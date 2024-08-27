@@ -31,8 +31,16 @@ class EnvironmentConfig:
     def get_env_values(cls) -> Iterable[EnvConfValue[Any]]:
         return filter(
             lambda value: isinstance(value, EnvConfValue),
-            cls.__dict__.values(),
+            cls.get_all_properties(),
         )
+
+    @classmethod
+    def get_all_properties(cls) -> list[Any]:
+        properties: list[Any] = [*cls.__dict__.values()]
+        for base in cls.__bases__:
+            if issubclass(base, EnvironmentConfig):
+                properties += base.get_all_properties()
+        return properties
 
     @classmethod
     def get_configs(cls) -> Iterable[tuple[str, Type[EnvironmentConfig]]]:

@@ -112,3 +112,18 @@ def test_environment_config_get_variables() -> None:
     assert len(variables) == 2
     assert variables[0].key == "HOST"
     assert variables[1].key == "JWT_PUBLIC_KEY"
+
+
+def test_environment_config_inheritance() -> None:
+    class FirstConfig(EnvironmentConfig):
+        a: EnvConfValue[str] = EnvConfValue("A")
+
+    class SecondConfig(FirstConfig):
+        b: EnvConfValue[str] = EnvConfValue("B")
+
+    os.environ["A"] = "test_value"
+    os.environ["B"] = "test_host"
+    variables = SecondConfig.get_all_variables()
+    assert len(variables) == 2
+    assert variables[0].key == "B"
+    assert variables[1].key == "A"
