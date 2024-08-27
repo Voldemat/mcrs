@@ -115,15 +115,25 @@ def test_environment_config_get_variables() -> None:
 
 
 def test_environment_config_inheritance() -> None:
+    class SharedConfig(EnvironmentConfig):
+        c: EnvConfValue[str] = EnvConfValue("C")
+
     class FirstConfig(EnvironmentConfig):
+        shared: SharedConfig
         a: EnvConfValue[str] = EnvConfValue("A")
 
     class SecondConfig(FirstConfig):
         b: EnvConfValue[str] = EnvConfValue("B")
 
-    os.environ["A"] = "test_value"
-    os.environ["B"] = "test_host"
+    os.environ["A"] = "test_a"
+    os.environ["B"] = "test_b"
+    os.environ["C"] = "test_c"
     variables = SecondConfig.get_all_variables()
-    assert len(variables) == 2
+    assert len(variables) == 3
     assert variables[0].key == "B"
     assert variables[1].key == "A"
+    assert variables[2].key == "C"
+    config = SecondConfig(EnvironmentManager.load())
+    assert config.shared.c.value == "test_c"
+    assert config.b.value == "test_b"
+    assert config.a.value == "test_a"

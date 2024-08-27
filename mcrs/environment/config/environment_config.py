@@ -43,12 +43,18 @@ class EnvironmentConfig:
         return properties
 
     @classmethod
-    def get_configs(cls) -> Iterable[tuple[str, Type[EnvironmentConfig]]]:
-        return filter(
-            lambda item: inspect.isclass(item[1])
-            and issubclass(item[1], EnvironmentConfig),
-            inspect.get_annotations(cls, eval_str=True).items(),
+    def get_configs(cls) -> list[tuple[str, Type[EnvironmentConfig]]]:
+        configs = list(
+            filter(
+                lambda item: inspect.isclass(item[1])
+                and issubclass(item[1], EnvironmentConfig),
+                inspect.get_annotations(cls, eval_str=True).items(),
+            )
         )
+        for base in cls.__bases__:
+            if issubclass(base, EnvironmentConfig):
+                configs += base.get_configs()
+        return configs
 
     @classmethod
     def get_all_variables(cls) -> list[EnvConfValue[Any]]:
