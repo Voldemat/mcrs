@@ -26,28 +26,6 @@ class EnvConfValue(Generic[T]):
 
     @overload
     def __init__(
-        self: EnvConfValue[str],
-        key: str,
-        default: str | None = None,
-        optional: Literal[False] = False,
-        validator: Callable[[str], None] | None = None,
-        converter: Callable[[str], str] | None = None,
-    ) -> None:
-        pass
-
-    @overload
-    def __init__(
-        self: EnvConfValue[str | None],
-        key: str,
-        default: None = None,
-        optional: Literal[True] = True,
-        validator: Callable[[str], None] | None = None,
-        converter: Callable[[str], str | None] | None = None,
-    ) -> None:
-        pass
-
-    @overload
-    def __init__(
         self: EnvConfValue[T],
         key: str,
         default: str | None = None,
